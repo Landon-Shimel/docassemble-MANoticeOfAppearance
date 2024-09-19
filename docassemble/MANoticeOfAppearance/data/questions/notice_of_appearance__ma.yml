@@ -1,0 +1,496 @@
+---
+include:
+  - docassemble.AssemblyLine:assembly_line.yml
+---
+metadata:
+  title: >-
+    Notice of Appearance - MA
+  short title: >-
+    Notice of Appearance - MA
+  description: |-
+    This interview helps someone in Massachusetts produces a complete Notice of Appearance that you can file with the court to alert the court and the parties to an attorney's involvement in a case.
+  can_I_use_this_form: |
+    If you are a Party to an active case in MA OR a licensed attorney in MA, you can use this interview to complete a Notice of Appearance.
+  before_you_start: |
+    This interview will help you produces a complete Notice of Appearance that you can file with the court to alert the court and the parties to an attorney's involvement in a case.
+    
+    Before you get started, please gather:
+    
+    1. Your Case Docket Number
+    2. Your Case Name
+    3. Which Court your Case is being heard in
+    
+    When you are finished, you will need to:
+    
+    1. Download the completed PDF
+    2. File the completed PDF with the court
+  maturity: production
+  estimated_completion_minutes: 10
+  estimated_completion_delta: 5
+  LIST_topics: 
+    - "CO-00-00-00-00"
+  tags:
+    - "CO-00-00-00-00"
+  authors:
+    - Landon Shimel
+  original_form:
+    - https://www.mass.gov/doc/notice-of-appearance/download
+  original_form_published_on: ""
+  help_page_url: >-
+    https://www.mass.gov/how-to/file-an-appearance-form
+  help_page_title: >-
+    File an appearance form - Mass.gov
+  allowed_courts: 
+    - "Boston Municipal Court"
+    - "District Court"
+    - "Housing Court"
+    - "Juvenile Court"
+    - "Land Court"
+    - "Probate and Family Court"
+    - "Superior Court"
+  typical_role: "unknown"
+  al_weaver_version: "1.11.0"
+  generated_on: "2024-09-17"
+  languages:
+    - en
+  jurisdiction: NAM-US-US+MA
+  review_date: 2024-09-17
+  form_titles:
+    - Notice of Appearance - MA
+  form_numbers:
+    - MPC 505a
+  update_notes: |
+---
+code: |
+  # This controls the default country and list of states in address field questions
+  AL_DEFAULT_COUNTRY = "US"
+---
+code: |
+  # This controls the default state in address field questions
+  AL_DEFAULT_STATE = "MA"
+---
+code: |
+  github_repo_name =  'docassemble-NoticeOfAppearanceMa'
+---
+code: |
+  interview_short_title = "Produces a complete Notice of Appearance that you can file with the court to alert the court and the parties to an attorney\'s involvement in a case"
+---
+code: |
+  al_form_type = "existing_case" 
+---
+objects:
+  - other_parties: ALPeopleList.using(there_are_any=True)
+  - users: ALPeopleList.using(ask_number=True,target_number=1)
+  - attorneys1_firm: ALPeopleList
+---
+sections:
+  - review_notice_of_appearance__ma: Review your answers
+---
+#################### Interview order #####################
+comment: |
+  Controls order and branching logic for questions specific to this form
+id: interview_order_notice_of_appearance__ma
+code: |
+  # Set the allowed courts for this interview
+  allowed_courts = ['Boston Municipal Court', 'District Court', 'Housing Court', 'Juvenile Court', 'Land Court', 'Probate and Family Court', 'Superior Court']
+  nav.set_section("review_notice_of_appearance__ma")
+  # Below sets the user_role and user_ask_role by asking a question.
+  # You can set user_ask_role directly instead to either 'plaintiff' or 'defendant'
+  user_ask_role
+  DeptRB2
+  RadioButtonList1
+  users1_name_full2
+  set_progress(16)
+  docket_number
+  petitioners.gather()
+  respondents.gather()
+  set_progress(32)
+  trial_court.address.address
+  users[0].phone_number
+  users[0].mobile_number
+  set_progress(48)
+  users[0].email
+  signature_date
+  interview_order_notice_of_appearance__ma = True
+---
+###################### Main order ######################
+comment: |
+  This block includes the logic for standalone interviews.
+  Delete mandatory: True to include in another interview
+mandatory: True
+code: |
+  al_intro_screen
+  notice_of_appearance__ma_intro
+  interview_order_notice_of_appearance__ma
+  signature_date
+  # Store anonymous data for analytics / statistics
+  store_variables_snapshot(
+      persistent=True,
+      data={
+          "zip": showifdef("users[0].address.zip"),
+          "reached_interview_end": True,
+      },
+  )
+  notice_of_appearance__ma_download
+---
+id: Notice_of_Appearance__MA
+continue button field: notice_of_appearance__ma_intro
+question: |
+  Notice of Appearance - MA
+subquestion: |
+  This interview will help you produces a complete Notice of Appearance that you can file with the court to alert the court and the parties to an attorney's involvement in a case.
+  
+  Before you get started, please gather:
+  
+  1. Your Case Docket Number
+  2. Your Case Name
+  3. Which Court your Case is being heard in
+  
+  When you are finished, you will need to:
+  
+  1. Download the completed PDF
+  2. File the completed PDF with the court
+
+  If you are a Party to an active case in MA OR a licensed attorney in MA, you can use this interview to complete a Notice of Appearance.
+
+  Most people take about 10 minutes to complete this interview.
+---
+id: Case Information
+question: |
+  Case Information
+subquestion: |
+  Please answer the following questions related to the information associated with your case
+fields:
+  - "Is your case in District Court?": DeptRB2
+    datatype: yesno
+  - "Is your case in Housing court?": DeptRB3
+    datatype: yesno
+  - "Is your case in Boston Municipal court?": DeptRB1
+    datatype: yesno
+  - "Is your case in Juvenile court?": DeptRB4
+    datatype: yesno
+  - "Is your case in Land court?": DeptRB5
+    datatype: yesno
+  - "Is your case in Probate & Family court?": DeptRB6
+    datatype: yesno
+  - "Is your case in Superior court?": DeptRB7
+    datatype: yesno
+---
+id: Representation Status
+question: |
+  Representation Status
+subquestion: |
+  Please answer these questions regarding your representation status for this case
+fields:
+  - "I am representing myself in this case (Pro-se)": RadioButtonList1
+    datatype: yesno
+  - "An attorney is representing me in this case": RadioButtonList2
+    datatype: yesno
+  - "What is the full name of the party being represented in this case?": users1_name_full1
+    maxlength: 74
+---
+id: Representative Information
+question: |
+  Representative Information
+subquestion: |
+  Answer the following questions related to information about the Representative in this case. 
+  
+  If you are represented by an attorney then these questions are asking for THEIR information, not your information.
+  
+  If you are representing yourself, then these questions are asking for YOUR information.
+fields:
+  - "What is the full Name of the Representative in this case? (ie Attorney or Pro-se person filling out form)": users1_name_full2
+    maxlength: 130
+  - "What is the Board of Bar Overseers (BBO) Number of the Attorney in this case": attorneys1_bar_number
+    maxlength: 87
+    required: False
+  - "What law firm does the attorney in this case work for?": attorneys1_firm_name
+    maxlength: 130
+    required: False
+  - "What Unit/Apartment Number does the Representative in this case reside in?": users1_addressunit
+    maxlength: 16
+  - "What Address does the Representative in this case use?": users1_addressaddress
+    maxlength: 112
+  - "What State does the Representative in this case reside in?": users1_addressstate
+    maxlength: 14
+  - "What Zip Code does the Representative in this case reside in?": users1_addresszip
+    maxlength: 22
+  - "What City does the Representative in this case reside in?": users1_addresscity
+    maxlength: 108
+---
+id: preview notice_of_appearance__ma
+question: |
+  Preview your form before you sign it
+subquestion: |
+  Here is a preview of the form you will sign on the next page.   
+  
+  ${ al_court_bundle.as_pdf(key='preview') }
+
+  Click the image to open it in a new tab. Click the "Edit answers" button
+  to edit your answers.
+
+  ${ action_button_html(url_action('review_notice_of_appearance__ma'), label='Edit answers', color='info') }
+  
+  Remember to come back to this window to continue and sign your form.
+continue button field: notice_of_appearance__ma_preview_question    
+---
+code: |
+  signature_fields = []
+---
+code: |
+  # This is a placeholder for the addresses that will be searched
+  # for matching address to court. Edit if court venue is based on 
+  # a different address than the user's
+  [user.address.address for user in users.complete_elements()]
+  addresses_to_search = [user.address for user in users.complete_elements()]
+---
+id: notice of appearance ma review screen
+event: review_notice_of_appearance__ma
+question: |
+  Review your answers
+review:
+  - Edit: docket_number
+    button: |
+      **Docket number**:
+      ${ docket_number }
+  - Edit: DeptRB2
+    button: |
+      **Is your case in District Court?**:
+      ${ word(yesno(DeptRB2)) }
+  - Edit: DeptRB3
+    button: |
+      **Is your case in Housing court?**:
+      ${ word(yesno(DeptRB3)) }
+  - Edit: DeptRB1
+    button: |
+      **Is your case in Boston Municipal court?**:
+      ${ word(yesno(DeptRB1)) }
+  - Edit: DeptRB4
+    button: |
+      **Is your case in Juvenile court?**:
+      ${ word(yesno(DeptRB4)) }
+  - Edit: DeptRB5
+    button: |
+      **Is your case in Land court?**:
+      ${ word(yesno(DeptRB5)) }
+  - Edit: petitioners.revisit
+    button: |
+      **Petitioners**
+
+      % for item in petitioners:
+        * ${ item }
+      % endfor
+  - Edit: DeptRB6
+    button: |
+      **Is your case in Probate & Family court?**:
+      ${ word(yesno(DeptRB6)) }
+  - Edit: DeptRB7
+    button: |
+      **Is your case in Superior court?**:
+      ${ word(yesno(DeptRB7)) }
+  - Edit: respondents.revisit
+    button: |
+      **Respondents**
+
+      % for item in respondents:
+        * ${ item }
+      % endfor
+  - Edit: trial_court
+    button: |
+      **Trial court**
+  
+      % if defined("trial_court.address.county"):
+      * address: ${ trial_court.address.block() }
+      % endif
+  - Edit: RadioButtonList1
+    button: |
+      **I am representing myself in this case (Pro-se)**:
+      ${ word(yesno(RadioButtonList1)) }
+  - Edit: users1_name_full1
+    button: |
+      **What is the full name of the party being represented in this case?**:
+      ${ users1_name_full1 }
+  - Edit: RadioButtonList2
+    button: |
+      **An attorney is representing me in this case**:
+      ${ word(yesno(RadioButtonList2)) }
+  - Edit: users1_name_full2
+    button: |
+      **What is the full Name of the Representative in this case? (ie Attorney or Pro-se person filling out form)**:
+      ${ users1_name_full2 }
+  - Edit: attorneys1_bar_number
+    button: |
+      **What is the Board of Bar Overseers (BBO) Number of the Attorney in this case**:
+      ${ attorneys1_bar_number }
+  - Edit: attorneys1_firm_name
+    button: |
+      **What law firm does the attorney in this case work for?**:
+      ${ attorneys1_firm_name }
+  - Edit: users.revisit
+    button: |
+      **Users**
+
+      % for item in users:
+        * ${ item }
+      % endfor
+  - Edit: users1_addressunit
+    button: |
+      **What Unit/Apartment Number does the Representative in this case reside in?**:
+      ${ users1_addressunit }
+  - Edit: users1_addressaddress
+    button: |
+      **What Address does the Representative in this case use?**:
+      ${ users1_addressaddress }
+  - Edit: users1_addressstate
+    button: |
+      **What State does the Representative in this case reside in?**:
+      ${ users1_addressstate }
+  - Edit: users1_addresszip
+    button: |
+      **What Zip Code does the Representative in this case reside in?**:
+      ${ users1_addresszip }
+  - Edit: users1_addresscity
+    button: |
+      **What City does the Representative in this case reside in?**:
+      ${ users1_addresscity }
+  - Edit: signature_date
+    button: |
+      **Date of signature**:
+      ${ signature_date }
+---
+continue button field: petitioners.revisit
+question: |
+  Edit petitioners
+subquestion: |
+  ${ petitioners.table }
+
+  ${ petitioners.add_action() }
+---
+table: petitioners.table
+rows: petitioners
+columns:
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+edit:
+  - name.first
+confirm: True
+
+---
+continue button field: respondents.revisit
+question: |
+  Edit respondents
+subquestion: |
+  ${ respondents.table }
+
+  ${ respondents.add_action() }
+---
+table: respondents.table
+rows: respondents
+columns:
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+edit:
+  - name.first
+confirm: True
+
+---
+continue button field: users.revisit
+question: |
+  Edit users
+subquestion: |
+  ${ users.table }
+
+  ${ users.add_action() }
+---
+table: users.table
+rows: users
+columns:
+  - Phone number: |
+      row_item.phone_number if defined("row_item.phone_number") else ""
+  - Mobile number: |
+      row_item.mobile_number if defined("row_item.mobile_number") else ""
+  - Email: |
+      row_item.email if defined("row_item.email") else ""
+edit:
+  - phone_number
+  - mobile_number
+  - email
+confirm: True
+
+---
+id: download notice_of_appearance__ma
+event: notice_of_appearance__ma_download
+question: |
+  All done
+subquestion: |
+  Thank you ${users}. Your form is ready to download and deliver.
+  
+  View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
+
+  ${ action_button_html(url_action('review_notice_of_appearance__ma'), label='Edit answers', color='info') }
+  
+  
+  ${ al_user_bundle.download_list_html() }
+  
+
+  ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
+
+progress: 100
+---
+# ALDocument objects specify the metadata for each template
+objects:
+  - notice_of_appearance__ma_Post_interview_instructions: ALDocument.using(title="Instructions", filename="notice_of_appearance__ma_next_steps.docx", enabled=True, has_addendum=False)
+  - notice_of_appearance__ma_attachment: ALDocument.using(title="Notice of Appearance - MA", filename="notice_of_appearance__ma", enabled=True, has_addendum=False, )
+---
+# Bundles group the ALDocuments into separate downloads, such as for court and for the user
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[notice_of_appearance__ma_Post_interview_instructions, notice_of_appearance__ma_attachment], filename="notice_of_appearance__ma", title="All forms to download for your records", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[notice_of_appearance__ma_attachment],  filename="notice_of_appearance__ma", title="All forms to deliver to court", enabled=True)
+---
+# Each attachment defines a key in an ALDocument. We use `i` as the placeholder here so the same template is 
+# used for "preview" and "final" keys, and logic in the template checks the value of 
+# `i` to show or hide the user's signature
+attachment:
+  name: Post-interview-Instructions
+  filename: notice_of_appearance__ma_next_steps
+  docx template file: notice_of_appearance__ma_next_steps.docx
+  variable name: notice_of_appearance__ma_Post_interview_instructions[i]
+  skip undefined: True
+  tagged pdf: True
+---
+attachment:
+  name: notice of appearance  ma
+  filename: notice_of_appearance__ma
+  variable name: notice_of_appearance__ma_attachment[i]
+  skip undefined: True
+  pdf template file: notice_of_appearance__ma.pdf
+  fields:
+      - "docket_number": ${ docket_number }
+      - "DeptRB2": ${ DeptRB2 }
+      - "DeptRB3": ${ DeptRB3 }
+      - "DeptRB1": ${ DeptRB1 }
+      - "DeptRB4": ${ DeptRB4 }
+      - "DeptRB5": ${ DeptRB5 }
+      - "petitioners": ${ petitioners }
+      - "DeptRB6": ${ DeptRB6 }
+      - "DeptRB7": ${ DeptRB7 }
+      - "respondents": ${ respondents }
+      - "trial_court_address_county": ${ trial_court.address.county }
+      - "RadioButtonList1": ${ RadioButtonList1 }
+      - "users1_name_full1": ${ users1_name_full1 }
+      - "RadioButtonList2": ${ RadioButtonList2 }
+      - "users1_name_full2": ${ users1_name_full2 }
+      - "attorneys1_bar_number": ${ attorneys1_bar_number }
+      - "attorneys1_firm_name": ${ attorneys1_firm_name }
+      - "users1_phone_number": ${ users[0].phone_number }
+      - "users1_address.unit": ${ users1_addressunit }
+      - "users1_address.address": ${ users1_addressaddress }
+      - "users1_mobile_number": ${ users[0].mobile_number }
+      - "users1_address.state": ${ users1_addressstate }
+      - "users1_address.zip": ${ users1_addresszip }
+      - "users1_address.city": ${ users1_addresscity }
+      - "users1_email": ${ users[0].email }
+      - "signature_date": ${ signature_date }
+
+
+
